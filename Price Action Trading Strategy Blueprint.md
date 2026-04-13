@@ -1,6 +1,121 @@
-This is the perfect way to operate. Measure twice, cut once. By finalizing this master blueprint, we ensure that the code we write in Phase 2 has zero ambiguity, zero emotional bleed-through, and strictly adheres to the state machine logic we established. 
+# The Pure Price Geometry Handbook: Mastering Market Structure Reversals
 
-Here is the complete, finalized documentation for Phase 1. 
+### 1. Introduction: The Power of Raw Price Action
+
+In algorithmic trading, success is a byproduct of removing "emotional bleed-through" and replacing it with mathematical certainty. The **Pure Price Geometry & Structure Break (PPG-SB)** strategy is a professional-grade, trend-reversal system designed to achieve this. Unlike retail strategies that rely on lagging indicators—which merely provide a delayed shadow of market movement—the PPG-SB utilizes raw Daily OHLC (Open, High, Low, Close) data to map volatility-adjusted structure in real-time.
+
+Central to this system is the **"One-Bullet" rule**. You are strictly prohibited from holding more than one pending order or one active position at any time. This constraint is the bedrock of psychological discipline; it transforms the trader from a reactive participant into a precise operator, ensuring that every trade is a calculated strike rather than a desperate gamble.
+
+**Key Insight:** The PPG-SB strategy functions as a zero-ambiguity system. By focusing on raw price action, you move away from subjective interpretation and toward a mechanical, state-driven methodology where every entry and exit is mathematically pre-determined.
+
+Before we can exploit a reversal, we must first master the geometric language required to map the market's current boundaries.
+
+--------------------------------------------------------------------------------
+
+### 2. The Building Blocks: Defining Market Boundaries
+
+To analyze price structure, we define the market's "geometry" using three fundamental components. For the PPG-SB system, we primarily target the **GBP/USD** on a Daily (D1) timeframe.
+
+|   |   |   |
+|---|---|---|
+|Component|Technical Definition|The "So What?" (Learner Impact)|
+|**N-Period Window**|A rolling lookback period fixed at **N=10** **days**.|Creates the "scope" of analysis; if a high or low isn't in the last 10 days, it is irrelevant to current structure.|
+|**Swing High (Resistance)**|The highest price point recorded within the N-Period Window.|Serves as the mathematical "ceiling" and the primary trigger for a State Machine transition from State 0 to State 1.|
+|**Swing Low (Support)**|The lowest price point recorded within the N-Period Window.|Serves as the mathematical "floor" and the foundation for calculating risk and trade invalidation.|
+
+These static points of interest combine to form a dynamic **Trend State**, which tells us whether the market is currently controlled by buyers or sellers.
+
+--------------------------------------------------------------------------------
+
+### 3. Deciphering the Trend: Bullish vs. Bearish States
+
+Using algorithmic logic, we determine the market's direction by comparing the current Swing High/Low to the previous ones. This determines the "Prior State" required for any setup.
+
+- **Bearish State (Downward Trend):**
+    - Defined by the relationship of the highs.
+    - The **Current Swing High** must be numerically lower than the **Previous Swing High**.
+- **Bullish State (Upward Trend):**
+    - Defined by the relationship of the lows.
+    - The **Current Swing Low** must be numerically higher than the **Previous Swing Low**.
+
+You must first identify a confirmed trend before you can trade its failure. A reversal cannot exist without a prior state to reverse from.
+
+--------------------------------------------------------------------------------
+
+### 4. The Catalyst: The Break of Market Structure (BMS)
+
+A Bullish Reversal requires a specific two-step sequence to move the system from a scanning phase to a setup phase.
+
+1. **Condition 1 (Required Prior State):** The prevailing Trend State must be **Bearish**. You cannot seek a Bullish reversal in a market that is already mathematically Bullish.
+2. **Condition 2 (The Trigger / BMS):** A Daily candle must **Close** strictly above the most recent Swing High.
+
+The requirement of a _Close_ is non-negotiable. A mere "wick" or touch of the level is insufficient to prove that the prior bearish geometry has been invalidated.
+
+**Warning:** Never chase the breakout candle. Chasing a rally leads to poor Risk/Reward ratios and exposes you to "the squeeze." The PPG-SB strategy ignores the breakout and waits for a specific retracement to a wholesale price.
+
+--------------------------------------------------------------------------------
+
+### 5. Precision Entry: The 50% Retracement Rule
+
+Once a BMS is confirmed, we calculate a precise entry that solves the Risk/Reward problem inherent in breakout trading. We use a **Buy Limit Order** at the 50% retracement level between the absolute Swing Low and the new Breakout High.
+
+**Step-by-Step Execution:**
+
+1. Identify the **absolute Swing Low** (the floor of the move) and the **Breakout High** (the peak of the BMS candle).
+2. Calculate the **Entry Price** and the **Risk in Pips**.
+3. Place the Buy Limit Order.
+
+```text
+Entry Price = (Breakout High + Swing Low) / 2
+Risk Pips = Entry Price - (Swing Low - 5 pips)
+```
+
+By calculating the Pip Distance immediately, you provide the necessary data for the Risk Management filter and lot-sizing logic.
+
+--------------------------------------------------------------------------------
+
+### 6. The Rulebook: Risk Management and Exit Strategy
+
+The PPG-SB system is built on mathematical invalidation. If the math doesn't work, the trade doesn't exist.
+
+- **Stop Loss (The Invalidation):** Placed exactly **5 pips below** the absolute Swing Low.
+- **Take Profit (The Target):** Placed at the next major historical Swing High found in the **prior dataset** (outside the current 10-day window).
+- **1% Risk Rule:** You must use a lot-sizing calculator to ensure that if the Stop Loss is hit, you lose a maximum of **1% of total account equity**.
+- **The R/R Filter:** The Reward (Entry to TP) must be at least **1.5 times** the Risk (Entry to SL).
+
+**Trade Pre-Flight Checklist:**
+
+- [ ] Was the prior state Bearish? (Condition 1)
+- [ ] Did a Daily candle close above the Swing High? (Condition 2)
+- [ ] Is the Stop Loss exactly 5 pips below the low?
+- [ ] Is the Risk/Reward ratio **1:1.5 or better**?
+- [ ] Is the lot size calculated to risk only 1% of equity?
+
+**If the Risk/Reward ratio is mathematically inferior (less than 1:1.5), the setup is aborted immediately. No exceptions.**
+
+--------------------------------------------------------------------------------
+
+### 7. The Logic Engine: Understanding the State Machine
+
+The strategy operates as a "State Machine," a logical flow that prevents emotional interference by dictating exactly what the trader's "brain" should be doing at any moment.
+
+#### STATE 0: FLAT (The Scan Phase)
+
+You have zero active trades and zero pending orders. Your only objective is to scan the Daily OHLC data for a valid BMS that occurs after a confirmed Bearish state.
+
+#### STATE 1: PENDING (The Cancellation Triggers)
+
+A Buy Limit Order has been placed. You are waiting for price to drop and "fill" your order. The order is cancelled and you return to STATE 0 if any of these **Price-Action Only** triggers occur:
+
+- **The Override:** A new BMS prints in the opposite direction.
+- **The Missed Boat:** Price rallies and **touches** the Take Profit target _before_ filling your entry. (Unlike the BMS, no close is required; a touch invalidates the setup).
+- **Premature Invalidation:** Price collapses and touches the Stop Loss level _before_ the order is filled.
+
+#### STATE 2: ACTIVE (The Execution Phase)
+
+Your order is filled. **PAUSE SCANNING.** To enforce the One-Bullet Rule, the system stops looking for new setups entirely. You are now a passive observer. The trade is managed strictly until it hits either the Stop Loss or the Take Profit. Once closed, the system resets to STATE 0.
+
+By adhering to this mechanical cycle, you remain a disciplined architect of price geometry rather than a victim of market noise.
 
 ***
 
