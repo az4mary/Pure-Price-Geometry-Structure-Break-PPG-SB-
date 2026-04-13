@@ -80,3 +80,18 @@ This module acts as the "brain" of the EA and dictates how it behaves based on i
 We have a complete, airtight technical specification. There are no loose ends for the algorithm to get confused by. 
 
 If this master blueprint looks correct to you, we can officially move to **Phase 2: Development & Coding**. I am ready to generate the initial Python script using `pandas` to backtest this exact logic against a historical dataset. Shall we begin coding?
+
+|Strategy Component|Requirement Category|Logical Rule/Definition|Parameter Value|Risk Management Constraint|Source|
+|---|---|---|---|---|---|
+|State Machine|State 0: FLAT|System scans for a valid Break of Market Structure (BMS).|0 active/pending trades|Not in source|[1]|
+|State Machine|State 1: PENDING|Limit Order is placed; system scans for Cancellation Triggers (Opposite BMS, Target Hit, or SL Hit before entry fill).|1 Limit Order|Price-action only cancellation triggers|[1]|
+|State Machine|State 2: ACTIVE|Trade is triggered; scanning for new setups is paused until the Stop Loss or Take Profit is reached.|1 active trade|Strict monitoring; no new setups allowed|[1]|
+|Entry Condition|Setup Phase (Bullish)|Prevailing Trend State must be Bearish (Current Swing High is lower than the Previous Swing High).|Not in source|Not in source|[1]|
+|Entry Condition|Trigger / BMS|A Daily candle must Close strictly greater than the most recent Swing High.|Not in source|Not in source|[1]|
+|Order Execution|Limit Order|Place a Buy Limit at the 50% retracement level between the absolute Swing Low and the new Breakout High.|50%|One-Bullet rule (one pending/active trade maximum)|[1]|
+|Exit Condition|Stop Loss|Exit order is placed exactly 5 pips below the absolute Swing Low.|5 pips below Swing Low|Maximum 1% of total account equity risk|[1]|
+|Exit Condition|Take Profit|Exit order is placed at the next major historical Swing High from the prior dataset.|Not in source|Minimum 1:1.5 Risk/Reward ratio required|[1]|
+|Core Definitions|Swing High|The highest High recorded over the rolling N-period window.|N=10 days (example)|Not in source|[1]|
+|Core Definitions|Swing Low|The lowest Low recorded over the rolling N-period window.|N=10 days (example)|Not in source|[1]|
+
+[1] Price Action Trading Strategy Blueprint
