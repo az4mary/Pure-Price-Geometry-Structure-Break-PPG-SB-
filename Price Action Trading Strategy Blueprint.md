@@ -80,6 +80,7 @@ This module acts as the "brain" of the EA and dictates how it behaves based on i
 We have a complete, airtight technical specification. There are no loose ends for the algorithm to get confused by. 
 
 If this master blueprint looks correct to you, we can officially move to **Phase 2: Development & Coding**. I am ready to generate the initial Python script using `pandas` to backtest this exact logic against a historical dataset. Shall we begin coding?
+
 ---
 # PPG-SB Trading Strategy Specifications
 |Strategy Component|Requirement Category|Logical Rule/Definition|Parameter Value|Risk Management Constraint|Source|
