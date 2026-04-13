@@ -206,3 +206,116 @@ Automated risk management serves as the final barrier against drawdown. In this 
 **The "So What?" Layer:** The 50% retracement entry requirement functions as a critical **volatility filter**. By requiring price to return to the mean of the breakout move, the system automatically rejects "vertical" moves where price extends too far without a structural retest. This filters out overextended breakouts that would otherwise lead to wide stop-losses and poor reward ratios, effectively protecting the system from high-velocity, low-probability environments.
 
 This specification is finalized and ready for Phase 2: Development & Coding.
+
+***
+
+# Strategy Investment Prospectus: Pure Price Geometry & Structure Break (PPG-SB)
+
+### 1. The Strategic Mandate: Mechanical Precision in Global Markets
+
+In the current landscape of institutional finance, the transition from discretionary oversight to a purely mechanical, state-machine-driven architecture is a prerequisite for sustainable alpha generation. The Pure Price Geometry & Structure Break (PPG-SB) strategy is engineered to neutralize the volatility inherent in the GBP/USD and other major currency pairs by prioritizing deterministic execution over human intuition. By codifying market behavior into binary, mathematical states, this framework eliminates the "emotional bleed-through" that frequently compromises portfolio integrity in high-stakes environments.
+
+The following table delineates the core parameters of the strategic mandate:
+
+|                         |                                                     |
+| ----------------------- | --------------------------------------------------- |
+| Parameter               | Specification                                       |
+| **Strategy Name**       | Pure Price Geometry & Structure Break (PPG-SB)      |
+| **Target Asset**        | GBP/USD (Extensible to major G10 pairs and indices) |
+| **Timeframe**           | D1 (Daily)                                          |
+| **Primary Data Source** | Raw Daily OHLC (Ground Truth)                       |
+| **Execution Style**     | Deterministic State-Machine / Limit Order Entry     |
+
+The strategic reliance on raw Daily OHLC data as the "ground truth" for market structure ensures architectural robustness. By utilizing the Daily Close as the primary signal for structural shifts, the system filters out intra-day noise and reactionary impulses. This objective foundation allows for a scalable model that maintains its logic across varying market regimes, providing the rigorous clarity required for institutional deployment.
+
+The subsequent sections define the geometric and state-transition protocols that form the core of the PPG-SB framework.
+
+--------------------------------------------------------------------------------
+
+### 2. Methodological Framework: Defining Market Structure
+
+To establish a repeatable and scalable investment model, market structure must be mapped through objective, mathematical definitions. The PPG-SB strategy utilizes an **N-Period Window**—a variable input parameter (e.g., N=10 days) used for backtesting—to identify localized levels of resistance and support.
+
+The following formal notations govern the system’s structural analysis:
+
+- **Swing High (Resistance):** Defined as Max(High_{t-N}, \dots, High_t) within the rolling window.
+- **Swing Low (Support):** Defined as Min(Low_{t-N}, \dots, Low_t) within the rolling window.
+
+By distilling price action into these numerical constraints, the system distinguishes between bullish and bearish environments with zero ambiguity. The "Trend State" is determined by the following symmetrical logic:
+
+|   |   |
+|---|---|
+|Trend State|Mathematical Requirement|
+|**Bullish State**|Current Swing Low is numerically higher than the Previous Swing Low.|
+|**Bearish State**|Current Swing High is numerically lower than the Previous Swing High.|
+
+These structural definitions serve as the immutable foundation upon which all trade execution protocols are built.
+
+--------------------------------------------------------------------------------
+
+### 3. Execution Protocol: The Trigger and the Entry
+
+The PPG-SB strategy operates on the principle of "measure twice, cut once," prioritizing capital efficiency over breakout participation. Rather than chasing price momentum—a practice that yields suboptimal risk-adjusted parity—the strategy utilizes "measured entries" via Limit Orders. This ensures that capital is only deployed when price returns to a mathematically favorable equilibrium.
+
+The technical protocol for a **Bullish Reversal** is governed by the following sequence:
+
+1. **Setup Phase:** The prevailing Trend State must be mathematically confirmed as Bearish.
+2. **The Trigger (Break of Market Structure):** A Daily candle must **Close** strictly higher than the most recent Swing High. This _Close_ is the only data point capable of triggering a state transition.
+3. **Order Calculation:** The system identifies the 50% retracement level (Equilibrium) between the absolute Swing Low and the new Breakout High.
+4. **Execution:** A Buy Limit Order is placed precisely at this 50% level.
+
+**Order Calculation Phase:** The 50% retracement is the absolute Limit Order execution point. The system calculates the mid-point between the most recent structural low and the peak of the breakout candle to ensure entry occurs at a localized discount, maximizing the probability of a high-expectancy outcome.
+
+This rigorous sequence ensures the transition from observation to deployment is entirely governed by confirmed structural shifts.
+
+--------------------------------------------------------------------------------
+
+### 4. Quantitative Risk Mitigation & The "One-Bullet" Rule
+
+Strict risk constraints are mandatory for the preservation of institutional capital. The PPG-SB strategy enforces a "One-Bullet" rule: the system is permitted to hold only one pending order or one active trade at any given time. This constraint is designed to manage idiosyncratic risk and prevent portfolio bloat during periods of high localized volatility.
+
+The following mandated filters enforce global risk-adjusted parity:
+
+- **Risk/Reward (R/R) Filter:** Every setup must pass a mathematical expectancy test. If the projected Reward-to-Risk ratio is lower than **1:1.5**, the setup is discarded and no order is placed.
+- **Capital Allocation:** Risk is strictly capped at a maximum of **1% of total account equity** per trade.
+- **Stop Loss (Invalidation):** The invalidation point is set exactly **5 pips below the absolute Swing Low** (for longs). This buffer accounts for spread and slippage while providing a consistent structural exit.
+- **Take Profit (Target):** Targets are identified using the next major historical Swing High from the prior dataset, ensuring exits are grounded in verified historical structure.
+
+These rules are non-discretionary and are enforced by the system’s internal state machine.
+
+--------------------------------------------------------------------------------
+
+### 5. Architectural Integrity: The State Machine Logic
+
+The "brain" of the PPG-SB strategy is a strict State Machine. Unlike traditional algorithmic models that lack rigorous state-management, this architecture ensures the system is always in one of three mutually exclusive operational states, eliminating signal ambiguity.
+
+#### STATE 0: FLAT (Scanning)
+
+The system is in a neutral state with zero exposure. It continuously scans Daily OHLC data for a valid Break of Market Structure (BMS) as defined in the execution protocol.
+
+#### STATE 1: PENDING (Order Placed)
+
+A Buy/Sell Limit Order has been placed. The system monitors for three "Price-Action Only" cancellation triggers, which dictate state transitions without the need for arbitrary time-based expirations:
+
+1. **The Override:** A new BMS occurs in the opposite direction. (Action: **Cancel current order and return to STATE 0** to recalculate new setup).
+2. **The Missed Boat:** Price reaches the Take Profit target before filling the Limit Order. (Action: **Cancel order and return to STATE 0**).
+3. **Premature Invalidation:** Price hits the Stop Loss level before filling the Limit Order. (Action: **Cancel order and return to STATE 0**).
+
+#### STATE 2: ACTIVE (Trade Triggered)
+
+The Limit Order has been filled and the system is in the market. Upon entering this state, the system triggers a **PAUSE SCANNING** directive. This is the primary constraint of the logic core, ensuring no new setups are sought until the current position is resolved by the Stop Loss or Take Profit.
+
+--------------------------------------------------------------------------------
+
+### 6. Operational Scalability & Institutional Readiness
+
+The modular nature of the PPG-SB strategy ensures it is prepared for high-fidelity backtesting and technical deployment in MQL5 or Python environments.
+
+|   |   |   |
+|---|---|---|
+|Module|Primary Function|Strategic Value to the Investor|
+|**Module A: Data Intake**|Ingests D1 OHLC data and updates rolling N-period Highs/Lows.|Ensures the strategy reacts to "Ground Truth" price action only.|
+|**Module B: Risk Calculator**|Determines lot sizes based on equity and pip distance to Stop Loss.|Guarantees absolute adherence to the 1% risk-per-trade mandate.|
+|**Module C: State Machine**|Manages transitions between Flat, Pending, and Active states.|Eliminates human error and ensures zero ambiguity in order management.|
+
+The PPG-SB master blueprint is now airtight and mathematically sound. By establishing these deterministic execution protocols, we have successfully mitigated discretionary risk. The system is now ready for **Phase 2: Development & Coding**, where it will undergo rigorous historical backtesting across multiple market cycles to validate its long-term expectancy.
