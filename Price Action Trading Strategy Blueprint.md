@@ -119,6 +119,96 @@ By adhering to this mechanical cycle, you remain a disciplined architect of pric
 
 ***
 
+# Mastering the Bullish Reversal: A Step-by-Step State Machine Walkthrough
+
+## 1. Strategy Foundations: The PPG-SB Philosophy
+
+The **Pure Price Geometry & Structure Break (PPG-SB)** strategy is a rigorous, mechanical trend-reversal system designed to eliminate heuristic drift and mitigate the cognitive biases inherent in discretionary execution. While traditional traders often succumb to emotional bleed-through—buying into "volatility expansion without structural confirmation"—the PPG-SB utilizes a state-machine architecture. It treats the market as a series of logical transitions, moving only when raw Daily OHLC data confirms a mathematical shift in trend.
+
+The "So What?" of this approach is the institutional-grade discipline it enforces. By waiting for a confirmed Break of Market Structure (BMS) and subsequent retracement, the system avoids chasing price, instead securing entries at a localized "discount."
+
+**Note: The One-Bullet Rule** To prevent over-leveraging and maintain focus on high-probability setups, the system is constrained by a "One-Bullet Rule." It is physically incapable of holding more than one pending order or one active trade at any given time.
+
+Before a reversal can be quantified, the architecture must first define the existing environment.
+
+## 2. Phase 1: Establishing the Bearish Context (State 0)
+
+The system operates on the **GBP/USD** pair using the **D1 (Daily)** timeframe. It begins in **STATE 0 (Scanning)**, where it ingests data to define the localized market boundaries through a rolling **N-Period Window** (set to 10 days).
+
+### Market Structure Definitions
+
+|   |   |
+|---|---|
+|Term|Mathematical Logic / Definition|
+|**N-Period Window**|The lookback period (10 days) used to ingest OHLC data for structure calculation.|
+|**Swing High (Resistance)**|The highest price (High) recorded within the current rolling N-period window.|
+|**Swing Low (Support)**|The lowest price (Low) recorded within the current rolling N-period window.|
+|**Bearish Trend**|A structural state where the current Swing High is numerically lower than the previously confirmed Swing High.|
+|**Breakout High**|The highest price (High) reached by the specific "Signal Candle" that triggers the BMS.|
+
+The transition from observation to action occurs only when the defined bearish structure is liquidated by price action.
+
+## 3. Phase 2: The Catalyst—Break of Market Structure (BMS)
+
+The transition out of the scanning phase requires a specific trigger: **Condition 2 (The BMS)**. The state machine differentiates between a "liquidity grab" (a simple price touch) and a genuine structural shift.
+
+The definitive signal is a **Daily Close** strictly greater than the Swing High. If a candle pierces the level but closes below it, the system remains in **STATE 0**. This ensures zero ambiguity; the trend is only considered "broken" when the session's conviction is sustained through the close.
+
+**The Sequence of a Valid BMS:**
+
+1. **Context:** The system confirms a prevailing Bearish Trend.
+2. **Identification:** The algorithm locks the most recent Swing High as the "structural ceiling."
+3. **The Trigger:** A Daily candle closes with a price strictly higher than the Swing High.
+4. **Confirmation:** The system identifies this candle's High as the **Breakout High** and officially acknowledges the failure of the bearish trend.
+
+## 4. Phase 3: The Order Calculation & Risk Filter
+
+Once the BMS is confirmed, the system enters the "Calculation" phase. It does not execute at market price. Instead, it seeks a 50% retracement—the midpoint between the origin of the move (Swing Low) and the peak of the breakout (Breakout High).
+
+To ensure long-term profitability, a mandatory **R/R (Risk/Reward) Filter** is applied. If the distance to the target is not at least 1.5x the distance to the invalidation point, the setup is aborted to prevent discretionary execution errors.
+
+```text
+Limit Entry = (Breakout High + Swing Low) / 2
+Stop Loss   = Swing Low - 5 Pips
+Take Profit = Next Major Historical Swing High
+Risk Amount = Account Equity * 0.01 (1%)
+Lot Size    = Risk Amount / (Entry - Stop Loss in Pips)
+```
+
+If the R/R ratio is ≥ 1:1.5, the system proceeds to generate the order.
+
+## 5. Phase 4: Transitioning to STATE 1 (The Pending Order)
+
+Upon successful calculation, the architecture shifts from **STATE 0 (Scanning)** to **STATE 1 (Pending)**. The system transmits a **Buy Limit Order** to the broker.
+
+In this state, the machine stops looking for new entries and instead monitors for "Kill-Switches." These are price-action events that invalidate the setup before it is filled, replacing the need for arbitrary time-based expirations.
+
+### The Three Kill-Switches
+
+- **The Override:** A brand new Bearish BMS occurs (a daily close below the current Swing Low). This signals a structural resumption of the downtrend; the pending order is cancelled.
+- **The Missed Boat:** Price rallies and touches the Take Profit target before hitting our Limit Entry. The value proposition is gone; the order is cancelled.
+- **Premature Invalidation:** Price collapses and hits the Stop Loss level before the entry is filled. This indicates the "Support" has failed; the order is cancelled.
+
+If price hits the Limit Entry without triggering a Kill-Switch, the system transitions to its final phase.
+
+## 6. Phase 5: Transitioning to STATE 2 (Active Management)
+
+When the order is filled, the system enters **STATE 2 (Active)**. The primary directive in this state is to **PAUSE SCANNING**.
+
+By physically disabling the scanning module, the EA adheres to the "One-Bullet Rule," ensuring the architect does not over-trade or chase secondary setups while capital is already at risk. The system becomes a dedicated trade manager until resolution.
+
+### STATE 1 vs. STATE 2 Comparison
+
+|   |   |   |
+|---|---|---|
+|Current State|System Priority|Exit Condition|
+|**STATE 1: Pending**|Monitor for fill or cancellation triggers.|Entry filled, OR Kill-Switch triggered.|
+|**STATE 2: Active**|**PAUSE SCANNING**; Monitor TP/SL.|Price hits Take Profit OR Stop Loss.|
+
+Upon resolution (hitting TP or SL), the state machine resets to **STATE 0**, beginning the process anew. This chronological progression ensures that every decision is dictated by the blueprint, providing a purely mechanical trading operation with zero emotional bleed-through.
+
+***
+
 ### 1. Define Core Strategy: Pure Price Geometry & Structure Break (PPG-SB)
 
 The PPG-SB strategy is a purely mechanical, trend-reversal system. It relies entirely on raw Daily OHLC data to map the localized market structure and identify when an established trend mathematically fails. 
