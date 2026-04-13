@@ -100,107 +100,109 @@ If this master blueprint looks correct to you, we can officially move to **Phase
 
 ---
 
-Software Requirements Specification: Pure Price Geometry & Structure Break (PPG-SB) Algorithmic System
+# Software Requirements Specification: Pure Price Geometry & Structure Break (PPG-SB) Algorithmic System
 
-1. Executive Strategy Philosophy and System Objectives
+## 1. Executive Strategy Philosophy and System Objectives
 
 The Pure Price Geometry & Structure Break (PPG-SB) system is engineered as a strictly mechanical, trend-reversal framework designed to codify price action theory into a high-fidelity autonomous execution model. By utilizing raw daily data, the system provides a robust interface between structural market theory and programmatic rigor. The primary objective is the total elimination of discretionary variance—removing the cognitive heuristics and emotional interference that typically degrade performance during periods of high volatility or structural shifts. The system operates on the mathematical premise that trends possess quantifiable exhaustion points, which can be exploited once a reversal is validated through a verified structural failure.
 
 The system’s operational mission is anchored by three strategic pillars:
 
-* Mathematical Failure of Trends: A quantitative approach to mapping localized market structures using raw Daily OHLC data to identify the precise moment of trend exhaustion.
-* One-Bullet Rule: A governing systemic constraint that permits only a single pending order or one active position at any given time, preventing correlated exposure and over-leveraging.
-* Price-Action Driven Management: The removal of arbitrary, time-based expirations; all order lifecycle management and cancellations are dictated exclusively by the evolution of market geometry.
+- **Mathematical Failure of Trends:** A quantitative approach to mapping localized market structures using raw Daily OHLC data to identify the precise moment of trend exhaustion.
+- **One-Bullet Rule:** A governing systemic constraint that permits only a single pending order or one active position at any given time, preventing correlated exposure and over-leveraging.
+- **Price-Action Driven Management:** The removal of arbitrary, time-based expirations; all order lifecycle management and cancellations are dictated exclusively by the evolution of market geometry.
 
-The "So What?" Layer: In a programmatic environment, the "One-Bullet Rule" serves as a fundamental risk-mitigation layer that ensures capital preservation. By enforcing a single-threaded execution model, the system prevents the compounding of losses during regime changes or "noise-heavy" market conditions. This constraint guarantees that capital is reserved only for setups that have cleared every structural and risk-based hurdle, maximizing the efficacy of every unit of risk deployed.
+**The "So What?" Layer:** In a programmatic environment, the "One-Bullet Rule" serves as a fundamental risk-mitigation layer that ensures capital preservation. By enforcing a single-threaded execution model, the system prevents the compounding of losses during regime changes or "noise-heavy" market conditions. This constraint guarantees that capital is reserved only for setups that have cleared every structural and risk-based hurdle, maximizing the efficacy of every unit of risk deployed.
 
 This philosophical foundation establishes the "zero ambiguity" environment required for the following mathematical definitions and technical specifications.
 
-2. Technical Definitions and Data Input Specifications
+## 2. Technical Definitions and Data Input Specifications
 
 To facilitate an algorithm that operates with absolute mathematical certainty, the PPG-SB system requires standardized data definitions and rigid environmental constraints. This ensures that the execution engine processes market shifts through a dynamic yet deterministic logic filter.
 
-System Constraints
+### System Constraints
 
-* Target Asset: GBP/USD
-* Base Timeframe: D1 (Daily)
-* Default Lookback Window (N): 10 Periods
+- **Target Asset:** GBP/USD
+- **Base Timeframe:** D1 (Daily)
+- **Default Lookback Window (****N****):** 10 Periods
 
-Parameter	Mathematical Definition
-Swing High (Resistance)	The absolute maximum High [H_{max}] recorded over the rolling N-period window.
-Swing Low (Support)	The absolute minimum Low [L_{min}] recorded over the rolling N-period window.
-Bearish Trend State	A condition where the current Swing High is numerically lower than the preceding Swing High (SH_c < SH_{p}).
-Bullish Trend State	A condition where the current Swing Low is numerically higher than the preceding Swing Low (SL_c > SL_{p}).
+|   |   |
+|---|---|
+|Parameter|Mathematical Definition|
+|**Swing High (Resistance)**|The absolute maximum High [H_{max}] recorded over the rolling N-period window.|
+|**Swing Low (Support)**|The absolute minimum Low [L_{min}] recorded over the rolling N-period window.|
+|**Bearish Trend State**|A condition where the current Swing High is numerically lower than the preceding Swing High (SH_c < SH_{p}).|
+|**Bullish Trend State**|A condition where the current Swing Low is numerically higher than the preceding Swing Low (SL_c > SL_{p}).|
 
-The "So What?" Layer: This definition of market states introduces a lagging structural confirmation. While lagging indicators are often criticized in discretionary trading, here they serve as a critical architectural trade-off: the system sacrifices early entry for the benefit of zero ambiguity. By waiting for N-period confirmation, the algorithm ensures it only engages with established shifts in market momentum rather than intraday noise.
+**The "So What?" Layer:** This definition of market states introduces a lagging structural confirmation. While lagging indicators are often criticized in discretionary trading, here they serve as a critical architectural trade-off: the system sacrifices early entry for the benefit of zero ambiguity. By waiting for N-period confirmation, the algorithm ensures it only engages with established shifts in market momentum rather than intraday noise.
 
 These static definitions provide the requisite foundation for the system's active entry triggers and transactional lifecycle.
 
-3. Core Strategy Logic: Entry and Exit Mechanics
+## 3. Core Strategy Logic: Entry and Exit Mechanics
 
 The PPG-SB strategy transitions from passive observation to active setup identification through a verified Break of Market Structure (BMS). Unlike breakout strategies that enter on momentum—often resulting in poor mathematical expectancy—this system utilizes a mean-reversion entry model to optimize the reward-to-risk profile.
 
-Bullish Reversal Execution Sequence
+### Bullish Reversal Execution Sequence
 
-1. Setup Phase: The algorithm confirms the prevailing Trend State is mathematically Bearish.
-2. The Trigger (BMS): A D1 Candle Close must be strictly greater than the most recent Swing High. This confirms a structural shift from a daily perspective.
-3. Order Calculation: The system identifies the absolute Swing Low and the new Breakout High, calculating the 50% retracement (mean) of that specific expansion move.
-4. Execution: A Buy Limit Order is placed at the 50% retracement coordinate.
+1. **Setup Phase:** The algorithm confirms the prevailing Trend State is mathematically Bearish.
+2. **The Trigger (BMS):** A **D1 Candle Close** must be strictly greater than the most recent Swing High. This confirms a structural shift from a daily perspective.
+3. **Order Calculation:** The system identifies the absolute Swing Low and the new Breakout High, calculating the 50% retracement (mean) of that specific expansion move.
+4. **Execution:** A **Buy Limit Order** is placed at the 50% retracement coordinate.
 
-Exit Rules & Risk Parameters
+### Exit Rules & Risk Parameters
 
-* Stop Loss (SL): Placed exactly 5 pips below the absolute Swing Low of the setup.
-* Take Profit (TP): Placed at the nearest major historical Swing High identified in the prior dataset.
+- **Stop Loss (SL):** Placed exactly 5 pips below the absolute Swing Low of the setup.
+- **Take Profit (TP):** Placed at the nearest major historical Swing High identified in the prior dataset.
 
-The "So What?" Layer: Central to the system’s mathematical expectancy is the 1:1.5 R/R Filter. Before order transmission, the system calculates the distance from the 50% entry to the SL versus the TP. If the ratio is < 1:1.5, the setup is aborted. This requirement links the 50% retracement entry directly to the system's fill rate and expectancy; by demanding a deep retracement, the system improves the R/R ratio at the cost of fill frequency, ensuring that only "high-yield" setups are executed.
+**The "So What?" Layer:** Central to the system’s mathematical expectancy is the **1:1.5 R/R Filter**. Before order transmission, the system calculates the distance from the 50% entry to the SL versus the TP. If the ratio is < 1:1.5, the setup is aborted. This requirement links the 50% retracement entry directly to the system's fill rate and expectancy; by demanding a deep retracement, the system improves the R/R ratio at the cost of fill frequency, ensuring that only "high-yield" setups are executed.
 
 These entry and exit mechanics are encapsulated within a modular architecture to ensure consistency between backtesting and live deployment.
 
-4. Modular Architecture Design
+## 4. Modular Architecture Design
 
 Strategic integrity is maintained by separating the system into distinct functional modules. This decoupling allows for independent auditing of risk logic, data ingestion, and execution flow.
 
-* Module A: Data Intake & Processing: Responsible for the continuous ingestion of D1 OHLC data and the atomic update of rolling N-period swing points.
-* Module B: Risk & Sizing Calculator: This module reads Real-Time Equity (not just balance) to determine current exposure. It calculates the pip distance between entry and SL, deriving a lot size that ensures a maximum loss of 1% of total equity upon stop-out.
-* Module C: The State Machine: The central processing unit of the EA, responsible for managing the transitions between scanning and active market engagement.
+- **Module A: Data Intake & Processing:** Responsible for the continuous ingestion of D1 OHLC data and the atomic update of rolling N-period swing points.
+- **Module B: Risk & Sizing Calculator:** This module reads **Real-Time Equity** (not just balance) to determine current exposure. It calculates the pip distance between entry and SL, deriving a lot size that ensures a maximum loss of 1% of total equity upon stop-out.
+- **Module C: The State Machine:** The central processing unit of the EA, responsible for managing the transitions between scanning and active market engagement.
 
-The "So What?" Layer: Decoupling the "Risk & Sizing Calculator" from the "State Machine" ensures that execution is always subservient to capital preservation. By calculating risk against real-time equity rather than static balance, the algorithm accounts for systemic fluctuations and ensures that no order can be transmitted without passing a rigorous financial solvency check.
+**The "So What?" Layer:** Decoupling the "Risk & Sizing Calculator" from the "State Machine" ensures that execution is always subservient to capital preservation. By calculating risk against real-time equity rather than static balance, the algorithm accounts for systemic fluctuations and ensures that no order can be transmitted without passing a rigorous financial solvency check.
 
 This modular structure is operationally implemented through the State Machine’s transactional logic.
 
-5. State Machine Logic and Transactional Lifecycle
+## 5. State Machine Logic and Transactional Lifecycle
 
 The State Machine architecture is the ideal implementation for ensuring "zero emotional bleed-through" and state atomicity. The system is restricted to three mutually exclusive states.
 
-STATE 0: FLAT (Scanning)
+### STATE 0: FLAT (Scanning)
 
-* Condition: Zero active trades and zero pending orders.
-* Action: Continuous monitoring of D1 OHLC for a valid BMS.
+- **Condition:** Zero active trades and zero pending orders.
+- **Action:** Continuous monitoring of D1 OHLC for a valid BMS.
 
-STATE 1: PENDING (Order Placed)
+### STATE 1: PENDING (Order Placed)
 
-* Condition: A Limit Order is live in the market, awaiting a fill.
-* Action: Active monitoring for Price-Action Cancellation Triggers:
-  * The Override: A new BMS prints in the opposite direction.
-  * The Missed Boat: Price reaches the TP target before the Limit Order is filled.
-  * Premature Invalidation: Price hits the SL level before the Limit Order is filled.
+- **Condition:** A Limit Order is live in the market, awaiting a fill.
+- **Action:** Active monitoring for Price-Action Cancellation Triggers:
+    - **The Override:** A new BMS prints in the opposite direction.
+    - **The Missed Boat:** Price reaches the TP target before the Limit Order is filled.
+    - **Premature Invalidation:** Price hits the SL level before the Limit Order is filled.
 
-STATE 2: ACTIVE (Trade Triggered)
+### STATE 2: ACTIVE (Trade Triggered)
 
-* Condition: The Limit Order is filled; the position is live.
-* Action: PAUSE SCANNING (Mutex Lock). The system applies a Mutual Exclusion Lock on the scanning logic to enforce the One-Bullet Rule. No new setups can be processed until the current trade is resolved.
-* Resolution: The position is held until a terminal SL or TP event occurs, triggering a transition back to STATE 0.
+- **Condition:** The Limit Order is filled; the position is live.
+- **Action:** **PAUSE SCANNING (Mutex Lock).** The system applies a Mutual Exclusion Lock on the scanning logic to enforce the One-Bullet Rule. No new setups can be processed until the current trade is resolved.
+- **Resolution:** The position is held until a terminal SL or TP event occurs, triggering a transition back to STATE 0.
 
-The "So What?" Layer: By utilizing price-action triggers like "The Missed Boat" rather than time-based expirations, the system maintains perfect synchronization with market geometry. An order is only removed when the structural rationale for the trade is invalidated by price, ensuring the system remains "in-sync" with the asset's actual movement rather than an arbitrary clock.
+**The "So What?" Layer:** By utilizing price-action triggers like "The Missed Boat" rather than time-based expirations, the system maintains perfect synchronization with market geometry. An order is only removed when the structural rationale for the trade is invalidated by price, ensuring the system remains "in-sync" with the asset's actual movement rather than an arbitrary clock.
 
-6. Risk Management and Execution Guardrails
+## 6. Risk Management and Execution Guardrails
 
 Automated risk management serves as the final barrier against drawdown. In this architecture, risk parameters are not optional variables but hard-coded systemic constraints.
 
-* Maximum Equity Risk: 1% of real-time account equity per transaction.
-* Structural Buffer: A mandatory 5-pip SL offset to account for spread and minor liquidity gaps.
-* R/R Filter: A hard floor of 1:1.5 reward-to-risk for every trade.
+- **Maximum Equity Risk:** 1% of real-time account equity per transaction.
+- **Structural Buffer:** A mandatory 5-pip SL offset to account for spread and minor liquidity gaps.
+- **R/R Filter:** A hard floor of 1:1.5 reward-to-risk for every trade.
 
-The "So What?" Layer: The 50% retracement entry requirement functions as a critical volatility filter. By requiring price to return to the mean of the breakout move, the system automatically rejects "vertical" moves where price extends too far without a structural retest. This filters out overextended breakouts that would otherwise lead to wide stop-losses and poor reward ratios, effectively protecting the system from high-velocity, low-probability environments.
+**The "So What?" Layer:** The 50% retracement entry requirement functions as a critical **volatility filter**. By requiring price to return to the mean of the breakout move, the system automatically rejects "vertical" moves where price extends too far without a structural retest. This filters out overextended breakouts that would otherwise lead to wide stop-losses and poor reward ratios, effectively protecting the system from high-velocity, low-probability environments.
 
 This specification is finalized and ready for Phase 2: Development & Coding.
